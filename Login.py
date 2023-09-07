@@ -41,7 +41,7 @@ def login(datafile:str) -> tuple[bool, bytes]:
             savedCypherUsrsalt = savedCypher[:32] + savedSalt
             savedCypherPwdsalt = savedCypher[32:]
             
-            #使用用户输入的用户名和储存的盐值进行加密，若结果和存储的加密用户名一致则判断用户名已存在，R设为True代表此用户已注册
+            #使用用户输入的用户名和储存的盐值进行加密，若结果和存储的加密用户名一致则判断用户名已存在，r设为True代表此用户已注册
             if savedCypherUsrsalt == Cypher(username, savedSalt):
                 r = True
                 password = str.encode(input('请输入密码：'))
@@ -90,4 +90,5 @@ def login(datafile:str) -> tuple[bool, bytes]:
 #测试用
 if __name__ == '__main__':
     isLogin, key = login('users.txt')
+    key = base64.urlsafe_b64encode(key)
     print(isLogin, key)
