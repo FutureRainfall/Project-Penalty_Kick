@@ -82,7 +82,7 @@ def login(datafile:str):
                 else:
                     reg = input('输入错误，请输入(Y/N):').upper()
                     
-    #返回是否注册和盐值
+    #返回R值（True为登录，False为新用户注册）以及盐值
     return(R, return_salt)
 
 #测试用
