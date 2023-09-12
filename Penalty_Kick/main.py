@@ -1,8 +1,8 @@
 import random
 import sys
 import base64
-import Login
-from data_encrypt import data_process as process   
+import modules.Login as Login
+from modules.data_encrypt import data_process as process
 
 
 def check(sp):      #输入方向拼写检查
@@ -67,14 +67,14 @@ def main():                                         #主函数
 
     return r                                        #返回比赛总回合数
 
-if __name__ == '__main__':
+if __name__ == '__main__':                          #判断是否为主执行函数
     score = [0,0]
     direction = ['left','center','right']
     print('Tip: using "exit" or "quit" to quit the game whenever you want. ')
     print('-- Use a username to register or login. --')
     try:
         username = input('Username: ')
-        l = Login.default('users.pk', username)     #登录/注册
+        l = Login.default('modules\\users.pk', username)     #登录/注册
         isReg, mykey, sha_username = l.login()      #获取是否是新用户、密钥和用户名哈希
     except:
         print('Invalid return. Please check. ')     #万一报错呢 :D
@@ -87,15 +87,15 @@ if __name__ == '__main__':
     if isReg:                                       #新用户注册
         record = [0, 0, 0, 0, 0]                    #新用户直接新建游戏数据
         try:
-            with open('save.pk', 'rb') as savefile: #读存档
+            with open('modules\\save.pk', 'rb') as savefile: #读存档
                 savedata = base64.urlsafe_b64decode(savefile.read())
         except:
-            with open('save.pk', 'wb')as savefile:
+            with open('modules\\save.pk', 'wb')as savefile:
                 savefile.write(b'')                 #没存档就新建
             savedata = b''
 
     else:                                           #不是新用户注册
-        with open('save.pk', 'rb') as savefile:     #读存档
+        with open('modules\\save.pk', 'rb') as savefile:     #读存档
             savedata = base64.urlsafe_b64decode(savefile.read())
 
         #每132位为一个用户的数据
@@ -104,19 +104,20 @@ if __name__ == '__main__':
             if savedata[pos:][:32] == sha_username: #前32位为用户名哈希，如果和输入用户名的哈希一样则确定为这个用户的数据
                 #把用户名哈希后面的内容解密，即为[ ,int,int,int,int,int]的数据形式，将其拆分为列表
                 record = f.Decrypt(savedata[pos+32:pos+132]).strip().split(b' ')
-                record = [int(j) for j in record]
+                record = [int(j) for j in record]   #转为int
                 break
             else:
                 pass
     
-    won, lost, max_last, min_last, total = record
-    played = won + lost
+    won, lost, max_last, min_last, total = record   #变量存取
+    played = won + lost                             #总局数played，和总回合数total区分开
     if min_last > 0:
-        average_last = total / played
+        average_last = total / played               #总回合数/总局数，为平均一局能持续几回合
     else:
         average_last = 0
 
-    if isReg:
+
+    if isReg:                                       #新老用户不同显示
         print('>> Hello, %s! Welcome to Penalty Kick!! <<'%username)
         print('>> Type "left", "center" or "right" to shoot '
     'in different directions! <<\n>> Good luck! <<')
@@ -129,37 +130,37 @@ if __name__ == '__main__':
     .format(played, won, lost, max_last, min_last, average_last))
     print('>> (Tip: using "exit" or "quit" to quit the game whenever you want, while the score will not be saved. ) <<')
 
-    rounds = main()
-    print('\n%d rounds played. '%rounds)
+    rounds = main()                                 #main()函数会执行游戏内容，同时返回此次游戏的回合数
+    print('\n{} rounds played. '.format(rounds))
     if score[0] > score[1]:
         won += 1
-        print('GAME OVER. You won!\nCongrats!')
-        print('''-----------------------------
-    FINAL SCORE: %d(you) : %d(AI)
-    -----------------------------'''%(score[0],score[1]))
+        print('GAME OVER. You won! Congrats!')
+        print('-----------------------------')
+        print('FINAL SCORE: {0}(you) : {1}(AI)'.format(score[0], score[1]))
+        print('-----------------------------')
     else:
         lost += 1
-        print('GAME OVER. You lost.\nTry again!')
-        print('''-----------------------------
-    FINAL SCORE: %d(you) : %d(AI)
-    -----------------------------'''%(score[0],score[1]))
+        print('GAME OVER. You lost. Try again!')
+        print('-----------------------------')
+        print('FINAL SCORE: {0}(you) : {1}(AI)'.format(score[0],score[1]))
+        print('-----------------------------')
 
     total += rounds
-    if rounds > max_last:
+    if rounds > max_last:                           #如果此次游戏回合数比存档里的最高回合数多，就刷新纪录
         max_last = rounds
-    if min_last == 0 or min_last > rounds:
+    if min_last == 0 or min_last > rounds:          #如果此次游戏回合数比存档里的最少回合数少，也刷新纪录
         min_last = rounds
 
-
-    #result = 'bytes(won) + b' ' + bytes(lost) + b' ' + bytes(max_last) + b' ' + bytes(min_last) + b' ' + bytes(total)'
+    #将游戏结果保存为bytes格式
     result = str.encode(' {0} {1} {2} {3} {4}'.format(won, lost, max_last, min_last, total))
-    result = f.Encrypt(result)
-    result = sha_username + result
-    if isReg:
+    result = f.Encrypt(result)                      #加密
+    result = sha_username + result                  #用户哈希和加密后的游戏数据
+    if isReg:                                       #注册用户直接把数据放在所有存档的后面
         savedata += result
-    else:
-        savedata = savedata[:pos] + result + savedata[pos+152:]
+    else:                                           #登录用户则要覆盖自己之前的数据
+        #pos之前是此用户之前的数据，每个玩家的数据都占132位，后面的则是其他玩家的数据
+        savedata = savedata[:pos] + result + savedata[pos+132:]
 
-    with open('save.pk', 'wb') as savefile:
+    with open('modules\\save.pk', 'wb') as savefile:         #写入数据
         savefile.write(base64.urlsafe_b64encode(savedata))
     sys.exit()
