@@ -27,5 +27,5 @@
 
 
 **2. 运行 .exe 文件：**
-- 已使用pyinstaller将文件打包成可执行文件`main.exe`，路径为*Penalty_Kick/main*，直接运行即可使用console进行游戏。*此方法可和__运行python代码__方式共享用户信息和游戏数据。*
-- **注意：** 不要移动`main.exe`位置，且须保持`main`文件夹和`files`文件夹处于同一级目录下，否则将无法读取用户信息和存档数据。
+- 已使用pyinstaller将文件打包成可执行文件`main.exe`，路径为*Penalty_Kick/main*，直接运行即可使用console进行游戏。*此方法可和“运行python代码”方式共享用户信息和游戏数据。*
+- **注意：** 不要移动`main`文件夹内的文件，且须保持`main`文件夹和`files`文件夹处于同一级目录下，否则将无法读取用户信息和存档数据。
