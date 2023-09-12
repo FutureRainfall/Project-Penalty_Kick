@@ -79,7 +79,7 @@ if __name__ == '__main__':                          #判断是否为主执行函
         isReg, mykey, sha_username = l.login()      #获取是否是新用户、密钥和用户名哈希
     except:
         print('Invalid return. Please check. ')     #万一报错呢 :D
-        sys.exit()
+        raise
 
     record = []                                     #建立列表用来存用户数据
     pos = int()                                     #这个变量用来存当前用户数据在数据文件中的位置
