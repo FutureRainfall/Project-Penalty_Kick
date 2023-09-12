@@ -1,5 +1,4 @@
 import base64
-import getpass
 import os
 import re
 import sys
@@ -82,7 +81,7 @@ class default(object):
                     r = False
                     savedSalt = savedCypher[-32:]
                     savedCypherPwdsalt = savedCypher[32:]
-                    password = str.encode(getpass.getpass('Password(input will be hidden): '))
+                    password = str.encode(input('Password: '))
                     if(password == 'quit' or password == 'exit'):
                         sys.exit()
 
@@ -110,14 +109,7 @@ class default(object):
 
                 #输入Y开始注册
                 if reg == 'Y':
-                    while True:
-                        password = str.encode(getpass.getpass('Set a password(input will be hidden): '))
-                        #重复确认密码
-                        check_pwd = str.encode(getpass.getpass('Confirm password(input will be hidden): '))
-                        if password == check_pwd:
-                            break
-                        else:
-                            print('Confirmation failed. \n')
+                    password = str.encode(input('Set a password: '))
                     #盐值是32位随机值
                     salt = os.urandom(32)
                     #计算用户名哈希值
