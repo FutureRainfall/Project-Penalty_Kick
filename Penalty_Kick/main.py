@@ -1,8 +1,9 @@
 import random
+import os
 import sys
 import base64
-import modules.Login as Login
-from modules.data_encrypt import data_process as process
+import files.Login as Login
+from files.data_encrypt import data_process as process
 
 
 def check(sp):      #输入方向拼写检查
@@ -53,7 +54,7 @@ def main():                                         #主函数
     g = 5                                           #五局三胜
     r = 1
     for r in range(1,6):
-        print('<<<\tROUND %d\t    >>>' %r)
+        print(f'<<<\tROUND {r}\t    >>>')
         kick(r)
         g = 5 - r
 
@@ -62,7 +63,7 @@ def main():                                         #主函数
             break
     while r >= 5 and score[0] == score[1]:
         r += 1
-        print('<<<\tROUND %d\t    >>>' %r)
+        print(f'<<<\tROUND {r}\t    >>>')
         kick(r)
 
     return r                                        #返回比赛总回合数
@@ -74,7 +75,7 @@ if __name__ == '__main__':                          #判断是否为主执行函
     print('-- Use a username to register or login. --')
     try:
         username = input('Username: ')
-        l = Login.default('modules\\users.pk', username)     #登录/注册
+        l = Login.default('files\\users.pk', username)     #登录/注册
         isReg, mykey, sha_username = l.login()      #获取是否是新用户、密钥和用户名哈希
     except:
         print('Invalid return. Please check. ')     #万一报错呢 :D
@@ -87,15 +88,15 @@ if __name__ == '__main__':                          #判断是否为主执行函
     if isReg:                                       #新用户注册
         record = [0, 0, 0, 0, 0]                    #新用户直接新建游戏数据
         try:
-            with open('modules\\save.pk', 'rb') as savefile: #读存档
+            with open('files\\save.pk', 'rb') as savefile: #读存档
                 savedata = base64.urlsafe_b64decode(savefile.read())
         except:
-            with open('modules\\save.pk', 'wb')as savefile:
+            with open('files\\save.pk', 'wb') as savefile:
                 savefile.write(b'')                 #没存档就新建
             savedata = b''
 
     else:                                           #不是新用户注册
-        with open('modules\\save.pk', 'rb') as savefile:     #读存档
+        with open('files\\save.pk', 'rb') as savefile:     #读存档
             savedata = base64.urlsafe_b64decode(savefile.read())
 
         #每132位为一个用户的数据
@@ -118,12 +119,12 @@ if __name__ == '__main__':                          #判断是否为主执行函
 
 
     if isReg:                                       #新老用户不同显示
-        print('>> Hello, %s! Welcome to Penalty Kick!! <<'%username)
+        print(f'>> Hello, {username}! Welcome to Penalty Kick!! <<')
         print('>> Type "left", "center" or "right" to shoot '
     'in different directions! <<\n>> Good luck! <<')
 
     else:
-        print('>> Welcome back, %s! <<'%username)
+        print(f'>> Welcome back, {username}! <<')
         print('''>> You have played {0} times, with {1} wins and {2} losses. <<
     >> You have played a {3} rounds rally and a blitz with {4} rounds. <<
     >> You end the game with an average of %.2f rounds. <<'''
@@ -131,7 +132,7 @@ if __name__ == '__main__':                          #判断是否为主执行函
     print('>> (Tip: using "exit" or "quit" to quit the game whenever you want, while the score will not be saved. ) <<')
 
     rounds = main()                                 #main()函数会执行游戏内容，同时返回此次游戏的回合数
-    print('\n{} rounds played. '.format(rounds))
+    print(f'\n{rounds} rounds played. ')
     if score[0] > score[1]:
         won += 1
         print('GAME OVER. You won! Congrats!')
@@ -142,7 +143,7 @@ if __name__ == '__main__':                          #判断是否为主执行函
         lost += 1
         print('GAME OVER. You lost. Try again!')
         print('-----------------------------')
-        print('FINAL SCORE: {0}(you) : {1}(AI)'.format(score[0],score[1]))
+        print('FINAL SCORE: {0}(you) : {1}(AI)'.format(score[0], score[1]))
         print('-----------------------------')
 
     total += rounds
@@ -158,9 +159,9 @@ if __name__ == '__main__':                          #判断是否为主执行函
     if isReg:                                       #注册用户直接把数据放在所有存档的后面
         savedata += result
     else:                                           #登录用户则要覆盖自己之前的数据
-        #pos之前是此用户之前的数据，每个玩家的数据都占132位，后面的则是其他玩家的数据
+        #每个玩家的数据都占132位，pos之前是此用户前面其他玩家的数据，pos+132后是后面其他玩家的数据
         savedata = savedata[:pos] + result + savedata[pos+132:]
 
-    with open('modules\\save.pk', 'wb') as savefile:         #写入数据
+    with open('files\\save.pk', 'wb') as savefile:  #写入数据
         savefile.write(base64.urlsafe_b64encode(savedata))
-    sys.exit()
+    os.system('pause')
