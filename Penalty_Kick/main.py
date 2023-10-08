@@ -4,48 +4,53 @@ import sys
 import base64
 import files.Login as Login
 from files.data_encrypt import data_process as process
+import files.anime as anime
 
 
-def check(sp):      #输入方向拼写检查
+def check(sp: str):      #输入方向拼写检查
     spell = str(sp).lower()
-    error = True
-    while error == True:
+    while True:
         for i in range(3):
             if spell == 'exit' or spell == 'quit':  #输入exit或quit直接退出
                 sys.exit()
-            if spell == direction[i]:               #输入的是left、center或right则返回此次输入结果
-                error = False
+            elif spell == direction[i]:             #输入的是left、center或right则返回此次输入结果
                 return spell
         print('Invalid input. Try again. ')         #输错就提示输入错误，重新输入
         spell = str(input()).lower()
 
 
 def kick(rd):   #游戏进行函数，参数为第几回合数
-
+    football = anime.ball()
     print('--#--You kick:--#--')                    #玩家射门
     ai = random.choice(direction)                   #电脑玩家随机一个方向
     you = check(input())                            #玩家输入一个方向
-    print('(You kicked ' + str(you) + ')  ' + '(AI saved ' + ai + ')')
+    football.dir(direction=you, keep=ai)
+    # print('(You kicked ' + str(you) + ')  ' + '(AI saved ' + ai + ')')
 
     if ai == you:                                   #方向一样则射门失败
-        print('[[<<< Oops! >>>]]')
+        # print('[[<<< Oops! >>>]]')
+        football.miss()
     else:                                           #方向不一样则射门成功
-        print(r'[[<<< *\/* Goal! :D >>>]]')
+        # print(r'[[<<< *\/* Goal! :D >>>]]')
+        football.goal()
         score[0] = score[0] + 1
 
     gap = 5 - rd + 1                                #计算分差，判断比赛是否还需继续
     if rd < 6:
         if score[1]-score[0]>gap or score[0]-score[1]>gap:
             return 0
-
+    
     print('--#--You save:--#--')                    #玩家守门，逻辑和射门一样，方向一致则守门成功，不一致则失败
     ai = random.choice(direction)
     you = check(input())
-    print('(AI kicked: ' + ai + ')  ' + 'You saved: ' + str(you) + ')')
+    football.dir(direction=ai, keep=you)
+    # print('(AI kicked: ' + ai + ')  ' + 'You saved: ' + str(you) + ')')
     if ai == you:
-        print('[[<<< Saved! ;P >>>]]')
+        # print('[[<<< Saved! ;P >>>]]')
+        football.save()
     else:
-        print('[[<<< No... T_T >>>]]')
+        # print('[[<<< No... T_T >>>]]')
+        football.no()
         score[1] = score[1] + 1
     print('--current score: %d(you) : %d(AI)--\n'%(score[0],score[1]))
 
@@ -74,8 +79,8 @@ if __name__ == '__main__':                          #判断是否为主执行函
     print('Tip: using "exit" or "quit" to quit the game whenever you want. ')
     print('-- Use a username to register or login. --')
     try:
-        username = input('Username: ')
-        l = Login.default('files\\users.pk', username)     #登录/注册
+        user = input('Username: ')
+        l = Login.default(filepath=r'\users.pk', username=user)     #登录/注册
         isReg, mykey, sha_username = l.login()      #获取是否是新用户、密钥和用户名哈希
     except:
         print('Invalid return. Please check. ')     #万一报错呢 :D
@@ -85,18 +90,21 @@ if __name__ == '__main__':                          #判断是否为主执行函
     pos = int()                                     #这个变量用来存当前用户数据在数据文件中的位置
     f = process(mykey)                              #一个数据加解密类的实例
 
+    current_path = os.path.dirname(__file__)
+    save_path = current_path + r'\files\save.pk'
+    
     if isReg:                                       #新用户注册
         record = [0, 0, 0, 0, 0]                    #新用户直接新建游戏数据
         try:
-            with open('files\\save.pk', 'rb') as savefile: #读存档
+            with open(save_path, 'rb') as savefile: #读存档
                 savedata = base64.urlsafe_b64decode(savefile.read())
         except:
-            with open('files\\save.pk', 'wb') as savefile:
+            with open(save_path, 'wb') as savefile:
                 savefile.write(b'')                 #没存档就新建
             savedata = b''
 
     else:                                           #不是新用户注册
-        with open('files\\save.pk', 'rb') as savefile:     #读存档
+        with open(save_path, 'rb') as savefile:     #读存档
             savedata = base64.urlsafe_b64decode(savefile.read())
 
         #每132位为一个用户的数据
@@ -119,15 +127,15 @@ if __name__ == '__main__':                          #判断是否为主执行函
 
 
     if isReg:                                       #新老用户不同显示
-        print(f'>> Hello, {username}! Welcome to Penalty Kick!! <<')
-        print('>> Type "left", "center" or "right" to shoot '
-    'in different directions! <<\n>> Good luck! <<')
+        print(f'>> Hello, {user}! Welcome to Penalty Kick!! <<')
+        print('>> Type "left", "center" or "right" to shoot in different directions! <<')
+        print('>> Good luck! <<')
 
     else:
-        print(f'>> Welcome back, {username}! <<')
+        print(f'>> Welcome back, {user}! <<')
         print('''>> You have played {0} times, with {1} wins and {2} losses. <<
     >> You have played a {3} rounds rally and a blitz with {4} rounds. <<
-    >> You end the game with an average of %.2f rounds. <<'''
+    >> You end the game with an average of {5:.2f} rounds. <<'''
     .format(played, won, lost, max_last, min_last, average_last))
     print('>> (Tip: using "exit" or "quit" to quit the game whenever you want, while the score will not be saved. ) <<')
 
@@ -162,6 +170,6 @@ if __name__ == '__main__':                          #判断是否为主执行函
         #每个玩家的数据都占132位，pos之前是此用户前面其他玩家的数据，pos+132后是后面其他玩家的数据
         savedata = savedata[:pos] + result + savedata[pos+132:]
 
-    with open('files\\save.pk', 'wb') as savefile:  #写入数据
+    with open(save_path, 'wb') as savefile:  #写入数据
         savefile.write(base64.urlsafe_b64encode(savedata))
     os.system('pause')

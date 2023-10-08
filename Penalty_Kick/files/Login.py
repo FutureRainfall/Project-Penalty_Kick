@@ -14,7 +14,8 @@ class default(object):
         filepath: str, 
         username: str, 
         ) -> None:
-        self._filepath = filepath
+        current_path = os.path.dirname(__file__)
+        self._filepath = current_path + filepath
         self._username = username
 
     #加密函数

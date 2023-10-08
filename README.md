@@ -1,5 +1,6 @@
-# Penalty_Kick（点球大战） v1.0.0
+# Penalty_Kick（点球大战） v1.0.1
 
+### v1.0.1更新：增加动画效果（and增加bug :(
 **简单做了一个小游戏，*点球大战*。**
 功能：玩家和电脑电脑玩家进行虚拟的点球大战。
 
@@ -23,10 +24,14 @@
 
 因为有了用户的概念和记录保存机制，所以后面又考虑加入**用户密码登录**和**加密数据保存**的功能，以防止本地数据被篡改，这样就更加像一个成熟的游戏了。这个功能耗费了大量的研究，主要是加密数据这里，如何让数据更加安全，基本不会被一般人破解。
 
+### 动画（v1.0.1更新内容）
+
+用字符模拟球门、足球和守门员，增加可视效果，让游戏体验更上一层楼。
+
 ## 说明
 
->**下载Penalty_Kick压缩包。使用时将 `Penalty_Kick`文件夹整体解压。**  
-**下载地址：[Penalty_Kick](https://github.com/FutureRainfall/Penalty_Kick/releases/download/v1.0.0/Penalty_Kick.zip "下载")**
+> **下载Penalty_Kick压缩包。使用时将 `Penalty_Kick`文件夹整体解压。**
+> **下载地址：[Penalty_Kick](https://github.com/FutureRainfall/Penalty_Kick/releases/download/v1.0.0/Penalty_Kick.zip "下载")**
 
 ***可选择以下两种运行方式：***
 
@@ -36,7 +41,7 @@
   - *代码里有很详细的注释，可以看一看*
 - 运行 `main.py`即可开始游戏！
 
-**2. 使用运行 .exe 文件的方式：**
+**2. 使用运行 .exe 文件的方式**（***暂不可用，有bug，见Issue***）
 
 - 已使用 pyinstaller 将文件打包成可执行文件 `main.exe`，路径为*Penalty_Kick/main*，直接运行即可使用console进行游戏。
   - *此方法可和 “运行python代码” 方式共享用户信息和游戏数据。*
