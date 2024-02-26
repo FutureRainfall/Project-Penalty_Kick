@@ -49,16 +49,14 @@
 
 **1. 运行exe**
 
-- 已使用 pyinstaller 将文件打包成可执行文件，使用时双击打开 `Penalty_Kick.exe`，即可使用控制台进行游戏。
-  - *此方法可和 “运行python代码” 方式共享用户信息和游戏数据。*
+- 已使用 pyinstaller 将文件打包成可执行文件，使用时双击打开 `\Penalty_Kick\Penalty_Kick.exe`，即可使用控制台进行游戏。
 
 **2. 使用运行python代码的方式（不推荐）：**
 
 > 必须装有 python 3.11.5 以及必要第三方库才可通过此方式运行。  
 详见***补充说明***。
 
-在此前提下，在`\Penalty_Kick\libs\`路径中运行终端，执行`python Penalty_Kick.py`即可开始游戏。
-
+在此前提下，在`\Penalty_Kick\libs\`路径中运行终端，执行`python Penalty_Kick.py`即可开始游戏。*此方法可和 “运行exe” 方式共享用户信息和游戏数据。*
 > [!WARNING]
 > **注意：** 请勿更改各文件相对位置，否则可能出现无法读取用户信息和存档数据或其他的情况。
 
