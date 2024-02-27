@@ -1,4 +1,4 @@
-# 点球大战 v1.1 :soccer:
+# 点球大战 v1.1 ⚽️
 
 ### v1.1更新：打包为exe（重点），增加彩色字符输出，完善逻辑
 
@@ -33,36 +33,30 @@
 
 ### 下载
 
-下载Penalty_Kick压缩包。使用时压缩包整体解压。
-
-> **下载地址：[Penalty_Kick V1.1 Release](https://github.com/FutureRainfall/Penalty_Kick/releases/download/v1.1/Penalty_Kick.zip "下载")**
-
-- 游戏代码使用*python*编写。
-- 在 `\Penalty_Kick\files\`文件夹中，`users.pk`存储了加密的用户密码，`save.pk`则加密存储了所有用户的游戏存档信息。目前这两个文件里已经存在了一个用户名为***test***、密码为***test***的用户及其游戏记录。
-- `\Penalty_Kick\libs\files\`文件夹中包含了所有所需代码。主执行模块为 `main.py`；`data_encrypt.py`为加密模块，`Login.py`为登录模块。
-
-> 代码里有很详细的注释，可以看一看
+> **下载 <u>[Penalty_Kick.zip](https://github.com/FutureRainfall/Penalty_Kick/releases/tag/v1.1 "下载")</u>** 。使用时将压缩包整体解压得到`Penalty_Kick`文件夹即可。
 
 ### 运行
 
-***可选择以下两种运行方式：***
+- 已使用 pyinstaller 将文件打包成可执行文件，使用时双击打开 **`\Penalty_Kick\Penalty_Kick.exe`**，即可使用控制台进行游戏。
+- \Penalty_Kick\libs\files\中存放了运行所需的代码，在Penalty_Kick.exe 运行时，实际调用的是这些代码。因此实际上只需更改这些代码就能更改程序，无需重新打包。欢迎在原基础上改进。
 
-**1. 运行exe**
-
-- 已使用 pyinstaller 将文件打包成可执行文件，使用时双击打开 `\Penalty_Kick\Penalty_Kick.exe`，即可使用控制台进行游戏。
-
-**2. 使用运行python代码的方式（不推荐）：**
-
-> 必须装有 python 3.11.5 以及必要第三方库才可通过此方式运行。  
-详见***补充说明***。
-
-在此前提下，在`\Penalty_Kick\libs\`路径中运行终端，执行`python Penalty_Kick.py`即可开始游戏。*此方法可和 “运行exe” 方式共享用户信息和游戏数据。*
 > [!WARNING]
 > **注意：** 请勿更改各文件相对位置，否则可能出现无法读取用户信息和存档数据或其他的情况。
 
 ### 补充说明
-**本程序编写环境：**  
-- python版本：3.11.5  
-- 使用的第三方库：  
-cryptography 42.0.2  
-rich 13.3.5 
+
+- 游戏代码使用*python*编写。
+- 在 \Penalty_Kick\files\ 文件夹中，`users.pk`存储了加密的用户密码，`save.pk`则加密存储了所有用户的游戏存档信息。目前这两个文件里已经存在了一个用户名为 ***test*** 、密码为 ***test*** 的用户及其游戏记录。
+- \Penalty_Kick\libs\files\ 文件夹中包含了所有所需代码。主执行模块为 `main.py`；`data_encrypt.py`为加密模块，`Login.py`为登录模块。
+
+> 代码里有很详细的注释，可以看一看。
+
+**本程序编写环境：**
+
+- python版本：3.11.5
+- conda虚拟环境：conda 24.1.2
+- 使用的第三方库：
+    - cryptography 42.0.2
+    - rich 13.3.5
+    - pyinstaller 5.13.2（打包用）
+
