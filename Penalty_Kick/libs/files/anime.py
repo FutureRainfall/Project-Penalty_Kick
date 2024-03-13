@@ -8,8 +8,6 @@ class man(object):
             for _ in range(pos-1):
                 print('    ', end='', flush=True)
             print('>=|O', end='', flush=True)
-            #time.sleep(0.5)
-        #os.system('cls')
         
         if dir == 'left': 
             # for _ in range(3):
@@ -17,7 +15,6 @@ class man(object):
             for _ in range(pos):
                 print('\b\b\b', end='', flush=True)
             print('O|=<', end='', flush=True)
-            #time.sleep(0.5)
             
         elif dir == 'center':
             if pos == 1:
@@ -26,7 +23,6 @@ class man(object):
                 print('=O=', end='', flush=True)
             else:
                 print('/=O=\\', end='', flush=True)
-        #os.system('cls')
 
 keeper = man()
 
@@ -270,6 +266,7 @@ class ball(object):
     
         print(miss)
         time.sleep(1)
+
 #测试用，被调用时无效
 if __name__ == '__main__':
     football = ball()

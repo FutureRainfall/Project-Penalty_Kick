@@ -17,16 +17,18 @@ class default(object):
         filepath: str, 
         username: str, 
         ) -> None:
-        #current_path = os.path.dirname(os.path.abspath(__file__))
         self._filepath = filepath
         self._username = username
 
     #加密函数
     def __Cypher(self, original: bytes, salt: bytes) -> bytes:
+        
         #使用PBKDF2HMAC类生成密钥推导实例kdf
         kdf = PBKDF2HMAC(algorithm=hashes.SHA256(), length=32, salt=salt, iterations=100000, backend=default_backend())
+        
         #将原始信息original用kdf推导产生密钥basic
         basic = kdf.derive(original)
+        
         #返回推导后的密钥basic和盐值salt的bytes类型连接
         return  basic + salt
 
@@ -47,17 +49,18 @@ class default(object):
         #检查输入合理性
         m = re.findall(r'\W', temp)
         while m:
+            
             #用户名只能使用汉字、英文字母、数字和下划线
             print('[bold red1]** Username can only contain Chinese characters, English letters, digits and underscores. **[/]')
+            
             temp = input('Username: ')
             m = re.findall(r'\W',temp)
-            # if temp.lower() == 'exit' or temp.lower() == 'quit':
-            #     sys.exit()
         return str.encode(temp)
 
 
     #主要的登录函数
     def login(self) -> tuple[bool, bytes, bytes]:
+        
         #读取存储信息，每一行为一个用户的信息，传入saved_data列表储存
         try:
             with open(self._filepath, 'rb') as saved:
@@ -73,6 +76,7 @@ class default(object):
 
     #判断用户输入的用户名是否存在，存在则登录，不存在则注册
         while(True):
+            
             #调用正则函数判断用户名是否合规
             username = self.__RegEx(self._username)
             isLogged = False
@@ -93,6 +97,7 @@ class default(object):
                     #使用用户输入的密码和储存的盐值进行加密，若结果和存储的加密密码一致则判断登录成功
                     if savedCypherPwdsalt == self.__Cypher(password, savedSalt):
                         console.print('Login successfully. ', style='bright_green')
+                        
                         #返回新注册为False以及盐值base64编码
                         return(False, base64.urlsafe_b64encode(savedSalt), sha_username)
                     else:
@@ -126,15 +131,20 @@ class default(object):
                             break
                         else:
                             console.print('Passwords do not match. \n', style='bold red1')
+                    
                     #盐值是32位随机值
                     salt = os.urandom(32)
+                    
                     #计算用户名哈希值
                     sha_usr = self.__SHA(username)
+                    
                     #使用加密函数加密密码
                     CypherPwd = self.__Cypher(password, salt)
                     data = base64.urlsafe_b64encode(sha_usr + CypherPwd)
+                    
                     #将已加密的且base64编码的新用户注册信息添加为saved_data的新元素并整个覆写回self._filepath
                     saved_data.append(data)
+                    
                     console.print('Register successfully. ', style='green')
                     with open(self._filepath, 'wb') as writer:
                         writer.write(b'\n'.join(saved_data).lstrip(b'\n'))
